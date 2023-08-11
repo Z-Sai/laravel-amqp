@@ -24,7 +24,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Sai97\\LaravelAmqp\\Providers\\AmqpQueueProviders"
+                "Sai97\\LaravelAmqp\\AmqpQueueProviders"
             ]
         }
     }
