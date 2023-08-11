@@ -6,12 +6,21 @@
             "Sai97\\LaravelAmqp\\": "src/"
         }
     },
+    "keywords": [
+        "amqp",
+        "laravel",
+        "laravel amqp",
+        "laravel-amqp",
+        "rabbitmq",
+        "queue"
+    ],
     "authors": [
         {
-            "name": "sai"
+            "name": "sai97"
         }
     ],
     "require": {},
+    "license": "MIT",
     "extra": {
         "laravel": {
             "providers": [
