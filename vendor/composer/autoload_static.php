@@ -9,12 +9,12 @@ class ComposerStaticInit83f02d069b9f198ed6c45ad18c978de2
     public static $prefixLengthsPsr4 = array (
         'S' => 
         array (
-            'Sai\\LaravelAmqp\\' => 16,
+            'Sai97\\LaravelAmqp\\' => 18,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Sai\\LaravelAmqp\\' => 
+        'Sai97\\LaravelAmqp\\' => 
         array (
             0 => __DIR__ . '/../..' . '/src',
         ),
@@ -22,6 +22,11 @@ class ComposerStaticInit83f02d069b9f198ed6c45ad18c978de2
 
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'Sai97\\LaravelAmqp\\Providers\\AmqpQueueProviders' => __DIR__ . '/../..' . '/src/Providers/AmqpQueueProviders.php',
+        'Sai97\\LaravelAmqp\\Queue' => __DIR__ . '/../..' . '/src/Queue.php',
+        'Sai97\\LaravelAmqp\\QueueFactory' => __DIR__ . '/../..' . '/src/QueueFactory.php',
+        'Sai97\\LaravelAmqp\\QueueInstance\\DefaultQueue' => __DIR__ . '/../..' . '/src/QueueInstance/DefaultQueue.php',
+        'Sai97\\LaravelAmqp\\QueueInterface' => __DIR__ . '/../..' . '/src/QueueInterface.php',
     );
 
     public static function getInitializer(ClassLoader $loader)

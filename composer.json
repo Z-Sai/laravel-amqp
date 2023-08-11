@@ -1,9 +1,9 @@
 {
-    "name": "sai/laravel-amqp",
+    "name": "sai97/laravel-amqp",
     "description": "基于php-amqplib/php-amqplib组件适配laravel框架的amqp封装库",
     "autoload": {
         "psr-4": {
-            "Sai\\LaravelAmqp\\": "src/"
+            "Sai97\\LaravelAmqp\\": "src/"
         }
     },
     "authors": [
@@ -15,7 +15,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "Sai\\LaravelAmqp\\Providers\\AmqpQueueProviders"
+                "Sai97\\LaravelAmqp\\Providers\\AmqpQueueProviders"
             ]
         }
     }

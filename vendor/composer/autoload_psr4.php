@@ -6,5 +6,5 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'Sai\\LaravelAmqp\\' => array($baseDir . '/src'),
+    'Sai97\\LaravelAmqp\\' => array($baseDir . '/src'),
 );

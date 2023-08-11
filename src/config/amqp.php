@@ -1,7 +1,8 @@
 <?php
 
-use App\Task\RabbitMQ\DefaultQueue;
-use App\Task\RabbitMQ\UserQueue;
+namespace Sai97\LaravelAmqp\config;
+
+use Sai97\LaravelAmqp\QueueInstance\DefaultQueue;
 
 return [
     "connection" => [
@@ -15,6 +16,5 @@ return [
 
     "event" => [
         "default" => DefaultQueue::class,
-        "user" => UserQueue::class
     ]
 ];

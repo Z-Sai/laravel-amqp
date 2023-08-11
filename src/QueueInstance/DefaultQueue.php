@@ -1,9 +1,9 @@
 <?php
 
-namespace Sai\LaravelAmqp\QueueInstance;
+namespace Sai97\LaravelAmqp\QueueInstance;
 
 use PhpAmqpLib\Message\AMQPMessage;
-use Sai\LaravelAmqp\Queue;
+use Sai97\LaravelAmqp\Queue;
 
 class DefaultQueue extends Queue
 {

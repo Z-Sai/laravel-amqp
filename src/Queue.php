@@ -1,5 +1,5 @@
 <?php
-namespace Sai\LaravelAmqp;
+namespace Sai97\LaravelAmqp;
 
 use PhpAmqpLib\Exchange\AMQPExchangeType;
 

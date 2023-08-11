@@ -7,4 +7,9 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'Composer\\InstalledVersions' => $vendorDir . '/composer/InstalledVersions.php',
+    'Sai97\\LaravelAmqp\\Providers\\AmqpQueueProviders' => $baseDir . '/src/Providers/AmqpQueueProviders.php',
+    'Sai97\\LaravelAmqp\\Queue' => $baseDir . '/src/Queue.php',
+    'Sai97\\LaravelAmqp\\QueueFactory' => $baseDir . '/src/QueueFactory.php',
+    'Sai97\\LaravelAmqp\\QueueInstance\\DefaultQueue' => $baseDir . '/src/QueueInstance/DefaultQueue.php',
+    'Sai97\\LaravelAmqp\\QueueInterface' => $baseDir . '/src/QueueInterface.php',
 );
