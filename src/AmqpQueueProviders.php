@@ -1,5 +1,5 @@
 <?php
-namespace Sai97\LaravelAmqp\Providers;
+namespace Sai97\LaravelAmqp;
 
 use Illuminate\Support\ServiceProvider;
 
