@@ -23,9 +23,9 @@ class ComposerStaticInit83f02d069b9f198ed6c45ad18c978de2
     public static $classMap = array (
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
         'Sai97\\LaravelAmqp\\AmqpQueueProviders' => __DIR__ . '/../..' . '/src/AmqpQueueProviders.php',
+        'Sai97\\LaravelAmqp\\AmqpQueueServices' => __DIR__ . '/../..' . '/src/AmqpQueueServices.php',
         'Sai97\\LaravelAmqp\\Queue' => __DIR__ . '/../..' . '/src/Queue.php',
         'Sai97\\LaravelAmqp\\QueueFactory' => __DIR__ . '/../..' . '/src/QueueFactory.php',
-        'Sai97\\LaravelAmqp\\QueueInstance\\DefaultQueue' => __DIR__ . '/../..' . '/src/QueueInstance/DefaultQueue.php',
         'Sai97\\LaravelAmqp\\QueueInterface' => __DIR__ . '/../..' . '/src/QueueInterface.php',
     );
 
