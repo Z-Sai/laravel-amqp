@@ -46,7 +46,10 @@ event是队列实例标识，最好和connection用相同的key以便管理。
 
 #### 目前可支持相关接口项：
 ```php
-//获取交换机名称
+    //获取连接名称
+    public function getConnectName(): string;
+
+    //获取交换机名称
     public function getExchangeName(): string;
 
     //获取交换机类型
@@ -57,9 +60,6 @@ event是队列实例标识，最好和connection用相同的key以便管理。
 
     //获取路由KEY
     public function getRoutingKey(): string;
-
-    //获取QOS数量
-    public function getQos(): int;
 
     //获取ContentType
     public function getContentType(): string;
@@ -88,11 +88,14 @@ event是队列实例标识，最好和connection用相同的key以便管理。
     //获取回调函数
     public function getCallback(): callable;
 
-    //获取连接名称
-    public function getConnectName(): string;
+    //是否自动提交ACK
+    public function isAutoAck(): bool;
+
+    //获取delivery_mode类型
+    public function getDeliveryMode(): int;
 ```
 
-当然你也可以自定义队列示例，只要继承Sai97\LaravelAmqp\Queue基类即可，具体功能配置参数参考Sai97\LaravelAmqp\QueueInterface。
+当然你也可以自定义队列实例，只要继承Sai97\LaravelAmqp\Queue基类即可，具体功能配置参数参考Sai97\LaravelAmqp\QueueInterface。
 
 ### 代码示例:
 
@@ -104,7 +107,7 @@ $amqpQueueServices->producer($message);
 ```
 
 #### 消费者:
-利用laravel自带的Command去定义一个rabbitmq worker，仅需要定义一次，后续只需要更改amqp.php配置文件添加不同的队列实例绑定关系即可，以下是RabbitMQWorker演示代码：
+利用laravel自带的Command去定义一个RabbitMQWorker自定义命令行，仅需要定义一次，后续只需要更改amqp.php配置文件添加不同的队列实例绑定关系即可，以下是RabbitMQWorker演示代码：
 ```php
 <?php
 
@@ -156,12 +159,10 @@ class RabbitMQWorker extends Command
             if (!isset($eventConfig[$event]) || empty($entity = $eventConfig[$event])) {
                 return $this->error("未知的事件: {$event}");
             }
-
-            $taskEntity = QueueFactory::getInstance($entity);
-
+            
             $this->info("rabbitmq worker of event[{$event}] process start ...");
 
-            $amqpQueueServices = new AmqpQueueServices($taskEntity);
+            $amqpQueueServices = new AmqpQueueServices(QueueFactory::getInstance($entity));
             $amqpQueueServices->consumer();
 
         } catch (\Throwable $throwable) {
@@ -196,8 +197,7 @@ redirect_stderr=true
 ```
 supervisorctl update
 ```
-这里不详细叙述supervisord相关操作，具体可查看supervisord官方文档。
 
 2. 通过配置numprocs参数来设定需要开启多少个相同配置项的消费者worker，这在任务分发、并行处理等场景十分适用，大大提高消费者执行效率。
 
-
+这里不详细叙述supervisord相关操作，具体可查看supervisord官方文档。
