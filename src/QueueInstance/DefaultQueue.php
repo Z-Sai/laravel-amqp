@@ -60,7 +60,8 @@ class DefaultQueue extends Queue
     public function getCallback(): callable
     {
         return function (AMQPMessage $msg) {
-            echo "Consumer Received: {$msg->body} \n";
+            $nowDateTime = date("Y-m-d H:i:s", time());
+            echo "[{$nowDateTime}] Consumer Received: {$msg->body} {$msg->getDeliveryTag()}\n";
             $msg->ack();
         };
     }

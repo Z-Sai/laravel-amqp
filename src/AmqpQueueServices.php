@@ -118,7 +118,7 @@ class AmqpQueueServices
 
         echo " [*] Waiting for messages. To exit press CTRL+C\n";
 
-        $channel->basic_consume($this->queue->getQueueName(), '', false, false, false, false, $this->queue->getCallback());
+        $channel->basic_consume($this->queue->getQueueName(), '', false, $this->queue->isAutoAck(), false, false, $this->queue->getCallback());
         while ($channel->is_open()) {
             $channel->wait();
         }

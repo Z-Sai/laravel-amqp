@@ -64,4 +64,9 @@ abstract class Queue implements QueueInterface
     {
         return [];
     }
+
+    public function isAutoAck(): bool
+    {
+        return false;
+    }
 }

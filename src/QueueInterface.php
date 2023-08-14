@@ -3,6 +3,9 @@ namespace Sai97\LaravelAmqp;
 
 interface QueueInterface
 {
+    //获取连接名称
+    public function getConnectName(): string;
+
     //获取交换机名称
     public function getExchangeName(): string;
 
@@ -45,6 +48,6 @@ interface QueueInterface
     //获取回调函数
     public function getCallback(): callable;
 
-    //获取连接名称
-    public function getConnectName(): string;
+    //是否自动提交ACK
+    public function isAutoAck(): bool;
 }
