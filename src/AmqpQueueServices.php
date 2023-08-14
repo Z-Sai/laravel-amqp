@@ -87,7 +87,7 @@ class AmqpQueueServices
 
         $properties = [
             "content_type" => $this->queueJob->getContentType(),
-            "delivery_mode" => $this->queueJob->getDeliveryMode()
+            "delivery_mode" => $this->queueJob->getMessageDeliveryMode()
         ];
         $message = new AMQPMessage($body, $properties);
 
