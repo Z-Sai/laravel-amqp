@@ -1,6 +1,6 @@
 <?php
 
-namespace App\QueueInstance;
+namespace App\QueueJob;
 
 use PhpAmqpLib\Message\AMQPMessage;
 use Sai97\LaravelAmqp\Queue;

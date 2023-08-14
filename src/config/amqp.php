@@ -1,6 +1,6 @@
 <?php
 
-use App\QueueInstance\DefaultQueueJob;
+use App\QueueJob\DefaultQueueJob;
 
 return [
     "connection" => [
