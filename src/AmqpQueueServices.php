@@ -1,4 +1,5 @@
 <?php
+
 namespace Sai97\LaravelAmqp;
 
 use PhpAmqpLib\Connection\AMQPStreamConnection;
@@ -12,7 +13,7 @@ class AmqpQueueServices
      * 当前队列实例
      * @var QueueInterface
      */
-    private QueueInterface $queue;
+    private QueueInterface $queueJob;
 
     /**
      * 当前通道
@@ -28,12 +29,12 @@ class AmqpQueueServices
 
     /**
      * 构造函数
-     * @param $queue
+     * @param QueueInterface $queueJob
      * @throws \Exception
      */
-    public function __construct($queue)
+    public function __construct(QueueInterface $queueJob)
     {
-        $this->queue = $queue;
+        $this->queueJob = $queueJob;
         $this->connection($this->getConfigs());
     }
 
@@ -56,7 +57,7 @@ class AmqpQueueServices
      */
     protected function getConfigs(): array
     {
-        $connectName = $this->queue->getConnectName();
+        $connectName = $this->queueJob->getConnectName();
         $amqpConfig = config("amqp");
         if (!isset($amqpConfig["connection"][$connectName]) || empty($connectionConfig = $amqpConfig["connection"][$connectName])) {
             throw new \Exception("rabbitmq config with connection is not found!");
@@ -85,23 +86,23 @@ class AmqpQueueServices
         $channel = $this->getChannel();
 
         $properties = [
-            "content_type" => $this->queue->getContentType(),
-            "delivery_mode" => $this->queue->getDeliveryMode()
+            "content_type" => $this->queueJob->getContentType(),
+            "delivery_mode" => $this->queueJob->getDeliveryMode()
         ];
         $message = new AMQPMessage($body, $properties);
 
         //初始化策略
         $this->initStrategy();
 
-        if ($this->queue->isDelay() && $this->queue->getDelayTTL()) {
+        if ($this->queueJob->isDelay() && $this->queueJob->getDelayTTL()) {
             $arguments = [
-                "x-delay" => $this->queue->getDelayTTL()
+                "x-delay" => $this->queueJob->getDelayTTL()
             ];
             $message->set("application_headers", new AMQPTable($arguments));
         }
 
         //执行发布消息
-        $channel->basic_publish($message, $this->queue->getExchangeName(), $this->queue->getRoutingKey() ? $this->queue->getRoutingKey() : $this->queue->getQueueName());
+        $channel->basic_publish($message, $this->queueJob->getExchangeName(), $this->queueJob->getRoutingKey() ? $this->queueJob->getRoutingKey() : $this->queueJob->getQueueName());
     }
 
     /**
@@ -113,14 +114,26 @@ class AmqpQueueServices
         $channel = $this->getChannel();
 
         //当前消费者每次只消费一条消息QOS
-        $channel->basic_qos($this->queue->getQosPrefetchSize(), $this->queue->getQosPrefetchCount(), $this->queue->isQosGlobal());
+        $channel->basic_qos($this->queueJob->getQosPrefetchSize(), $this->queueJob->getQosPrefetchCount(), $this->queueJob->isQosGlobal());
 
         //初始化策略
         $this->initStrategy();
 
-        echo " [*] Waiting for messages. To exit press CTRL+C\n";
+        $datetime = date("Y-m-d H:i:s", time());
+        echo " [{$datetime}] ChannelId:{$this->channel->getChannelId()} Waiting for messages...\n";
 
-        $channel->basic_consume($this->queue->getQueueName(), '', false, $this->queue->isAutoAck(), false, false, $this->queue->getCallback());
+        $channel->basic_consume(
+            $this->queueJob->getQueueName(),
+            $this->queueJob->getConsumerTag(),
+            $this->queueJob->isConsumerNoLocal(),
+            $this->queueJob->isAutoAck(),
+            $this->queueJob->isConsumerExclusive(),
+            $this->queueJob->isConsumerNowait(),
+            $this->queueJob->getCallback(),
+            ($this->queueJob->getConsumerTicket() > 0) ? $this->queueJob->getConsumerTicket() : null,
+            new AMQPTable($this->queueJob->getConsumerArgs())
+        );
+
         while ($channel->is_open()) {
             $channel->wait();
         }
@@ -132,35 +145,64 @@ class AmqpQueueServices
         $channel = $this->getChannel();
 
         $argument = [];
-        if ($this->queue->getQueueArgs()) {
-            $argument = $this->queue->getQueueArgs();
+        if ($this->queueJob->getQueueArgs()) {
+            $argument = $this->queueJob->getQueueArgs();
         }
 
         //开启死信模型
-        if ($this->queue->isDeadLetter() && $this->queue->getDeadLetterExchangeName() && $this->queue->getDeadLetterRoutingKey()) {
+        if ($this->queueJob->isDeadLetter() && $this->queueJob->getDeadLetterExchangeName() && $this->queueJob->getDeadLetterRoutingKey()) {
             //声明业务队列的死信交换机
             $argument = array_merge($argument, [
-                "x-dead-letter-exchange" => $this->queue->getDeadLetterExchangeName(), //配置死信交换机
-                "x-dead-letter-routing-key" => $this->queue->getDeadLetterRoutingKey(), //配置RoutingKey
+                "x-dead-letter-exchange" => $this->queueJob->getDeadLetterExchangeName(), //配置死信交换机
+                "x-dead-letter-routing-key" => $this->queueJob->getDeadLetterRoutingKey(), //配置RoutingKey
             ]);
         }
 
         //声明队列
-        $channel->queue_declare($this->queue->getQueueName(), false, true, false, false, false, new AMQPTable($argument));
+        $channel->queue_declare(
+            $this->queueJob->getQueueName(),
+            $this->queueJob->isQueuePassive(),
+            $this->queueJob->isQueueDurable(),
+            $this->queueJob->isQueueExclusive(),
+            $this->queueJob->isQueueAutoDelete(),
+            $this->queueJob->isQueueNowait(),
+            new AMQPTable($argument),
+            ($this->queueJob->getQueueTicket() > 0) ? $this->queueJob->getQueueTicket() : null,
+        );
 
         //使用交换机+路由KEY的交互模型
-        if ($this->queue->getExchangeName() && $this->queue->getExchangeType() && $this->queue->getRoutingKey()) {
+        if ($this->queueJob->getExchangeName() && $this->queueJob->getExchangeType() && $this->queueJob->getRoutingKey()) {
             //声明交换机
-            if ($this->queue->isDelay()) {
-                $exchangeArgument = [
-                    "x-delayed-type" => $this->queue->getExchangeType()
-                ];
-                $channel->exchange_declare($this->queue->getExchangeName(), "x-delayed-message", false, true, false, false, false, new AMQPTable($exchangeArgument));
+            if ($this->queueJob->isDelay()) {
+                $exchangeArgument = array_merge($this->queueJob->getExchangeArgs(), [
+                    "x-delayed-type" => $this->queueJob->getExchangeType()
+                ]);
+                $channel->exchange_declare(
+                    $this->queueJob->getExchangeName(),
+                    "x-delayed-message",
+                    $this->queueJob->isExchangePassive(),
+                    $this->queueJob->isExchangeDurable(),
+                    $this->queueJob->isExchangeAutoDelete(),
+                    $this->queueJob->isExchangeInternal(),
+                    $this->queueJob->isExchangeNowait(),
+                    new AMQPTable($exchangeArgument),
+                    ($this->queueJob->getExchangeTicket() > 0) ? $this->queueJob->getExchangeTicket() : null,
+                );
             } else {
-                $channel->exchange_declare($this->queue->getExchangeName(), $this->queue->getExchangeType(), false, true, false);
+                $channel->exchange_declare(
+                    $this->queueJob->getExchangeName(),
+                    $this->queueJob->getExchangeType(),
+                    $this->queueJob->isExchangePassive(),
+                    $this->queueJob->isExchangeDurable(),
+                    $this->queueJob->isExchangeAutoDelete(),
+                    $this->queueJob->isExchangeInternal(),
+                    $this->queueJob->isExchangeNowait(),
+                    new AMQPTable($this->queueJob->getExchangeArgs()),
+                    ($this->queueJob->getExchangeTicket() > 0) ? $this->queueJob->getExchangeTicket() : null,
+                );
             }
             //将队列绑定至交换机
-            $channel->queue_bind($this->queue->getQueueName(), $this->queue->getExchangeName(), $this->queue->getRoutingKey());
+            $channel->queue_bind($this->queueJob->getQueueName(), $this->queueJob->getExchangeName(), $this->queueJob->getRoutingKey());
         }
     }
 

@@ -5,7 +5,7 @@ namespace App\QueueInstance;
 use PhpAmqpLib\Message\AMQPMessage;
 use Sai97\LaravelAmqp\Queue;
 
-class DefaultQueue extends Queue
+class DefaultQueueJob extends Queue
 {
     public function getConnectName(): string
     {

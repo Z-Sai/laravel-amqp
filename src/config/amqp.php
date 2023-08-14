@@ -1,6 +1,6 @@
 <?php
 
-use App\QueueInstance\DefaultQueue;
+use App\QueueInstance\DefaultQueueJob;
 
 return [
     "connection" => [
@@ -13,6 +13,6 @@ return [
     ],
 
     "event" => [
-        "default" => DefaultQueue::class,
+        "default" => DefaultQueueJob::class,
     ]
 ];

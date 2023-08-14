@@ -57,6 +57,26 @@ interface QueueInterface
     //是否自动提交ACK
     public function isAutoAck(): bool;
 
-    //获取delivery_mode类型
-    public function getDeliveryMode(): int;
+    //获取message.delivery_mode类型
+    public function getMessageDeliveryMode(): int;
+
+    public function getConsumerTag(): string;
+    public function isConsumerNoLocal(): bool;
+    public function isConsumerExclusive(): bool;
+    public function isConsumerNowait(): bool;
+    public function getConsumerTicket(): int;
+    public function getConsumerArgs(): array;
+    public function isQueuePassive(): bool;
+    public function isQueueDurable(): bool;
+    public function isQueueExclusive(): bool;
+    public function isQueueAutoDelete(): bool;
+    public function isQueueNowait(): bool;
+    public function getQueueTicket(): int;
+    public function isExchangePassive(): bool;
+    public function isExchangeDurable(): bool;
+    public function isExchangeAutoDelete(): bool;
+    public function isExchangeInternal(): bool;
+    public function isExchangeNowait(): bool;
+    public function getExchangeTicket(): bool;
+    public function getExchangeArgs(): array;
 }

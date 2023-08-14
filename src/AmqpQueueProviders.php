@@ -18,7 +18,7 @@ class AmqpQueueProviders extends ServiceProvider
         ]);
 
         $this->publishes([
-            __DIR__.'/QueueInstance' => app_path("QueueInstance"),
+            __DIR__ . '/QueueJob' => app_path("QueueJob"),
         ]);
     }
 }

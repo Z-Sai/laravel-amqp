@@ -17,13 +17,14 @@ composer require sai97/laravel-amqp
 ```
 php artisan vendor:publish --provider="Sai97\LaravelAmqp\AmqpQueueProviders"
 ```
-执行完后会分别在app/config目录下生成amqp.php(amqp连接配置等)、app/QueueInstance/DefaultQueue.php(队列实例模板)
+执行完后会分别在app/config目录下生成amqp.php(amqp连接配置等)、app/QueueJob/DefaultQueueJob.php(默认队列任务)
 
 amqp.php
+
 ```php
 <?php
 
-use App\QueueInstance\DefaultQueue;
+use App\QueueJob\DefaultQueueJob;
 
 return [
     "connection" => [
@@ -36,7 +37,7 @@ return [
     ],
 
     "event" => [
-        "default" => DefaultQueue::class,
+        "default" => DefaultQueueJob::class,
     ]
 ];
 ```
@@ -102,7 +103,7 @@ event是队列实例标识，最好和connection用相同的key以便管理。
 #### 生产者:
 ```php
 $message = "This is message...";
-$amqpQueueServices = new AmqpQueueServices(QueueFactory::getInstance(DefaultQueue::class));
+$amqpQueueServices = new AmqpQueueServices(QueueFactory::getInstance(DefaultQueueJob::class));
 $amqpQueueServices->producer($message);
 ```
 
