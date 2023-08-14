@@ -113,7 +113,7 @@ class AmqpQueueServices
     {
         $channel = $this->getChannel();
 
-        //当前消费者每次只消费一条消息QOS
+        //当前消费者QOS相关配置
         $channel->basic_qos($this->queueJob->getQosPrefetchSize(), $this->queueJob->getQosPrefetchCount(), $this->queueJob->isQosGlobal());
 
         //初始化策略
