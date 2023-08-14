@@ -18,8 +18,14 @@ interface QueueInterface
     //获取路由KEY
     public function getRoutingKey(): string;
 
-    //获取QOS数量
-    public function getQos(): int;
+    //获取QOS.PrefetchSize
+    public function getQosPrefetchSize(): int;
+
+    //获取QOS.PrefetchCount
+    public function getQosPrefetchCount(): int;
+
+    //是否开启QOS.Global
+    public function isQosGlobal(): bool;
 
     //获取ContentType
     public function getContentType(): string;
@@ -50,4 +56,7 @@ interface QueueInterface
 
     //是否自动提交ACK
     public function isAutoAck(): bool;
+
+    //获取delivery_mode类型
+    public function getDeliveryMode(): int;
 }

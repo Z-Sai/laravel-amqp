@@ -86,10 +86,11 @@ class AmqpQueueServices
 
         $properties = [
             "content_type" => $this->queue->getContentType(),
-            "delivery_mode" => AMQPMessage::DELIVERY_MODE_PERSISTENT //持久化
+            "delivery_mode" => $this->queue->getDeliveryMode()
         ];
         $message = new AMQPMessage($body, $properties);
 
+        //初始化策略
         $this->initStrategy();
 
         if ($this->queue->isDelay() && $this->queue->getDelayTTL()) {
@@ -112,8 +113,9 @@ class AmqpQueueServices
         $channel = $this->getChannel();
 
         //当前消费者每次只消费一条消息QOS
-        $channel->basic_qos(null, $this->queue->getQos(), null);
+        $channel->basic_qos($this->queue->getQosPrefetchSize(), $this->queue->getQosPrefetchCount(), $this->queue->isQosGlobal());
 
+        //初始化策略
         $this->initStrategy();
 
         echo " [*] Waiting for messages. To exit press CTRL+C\n";

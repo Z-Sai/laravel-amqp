@@ -2,6 +2,7 @@
 namespace Sai97\LaravelAmqp;
 
 use PhpAmqpLib\Exchange\AMQPExchangeType;
+use PhpAmqpLib\Message\AMQPMessage;
 
 abstract class Queue implements QueueInterface
 {
@@ -10,9 +11,19 @@ abstract class Queue implements QueueInterface
         return AMQPExchangeType::DIRECT;
     }
 
-    public function getQos(): int
+    public function getQosPrefetchSize(): int
     {
-        return 1;
+        return 0;
+    }
+
+    public function getQosPrefetchCount(): int
+    {
+        return 10;
+    }
+
+    public function isQosGlobal(): bool
+    {
+        return false;
     }
 
     public function getContentType(): string
@@ -68,5 +79,10 @@ abstract class Queue implements QueueInterface
     public function isAutoAck(): bool
     {
         return false;
+    }
+
+    public function getDeliveryMode(): int
+    {
+        return AMQPMessage::DELIVERY_MODE_PERSISTENT;
     }
 }
