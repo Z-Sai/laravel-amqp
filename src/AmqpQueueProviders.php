@@ -12,11 +12,12 @@ class AmqpQueueProviders extends ServiceProvider
      */
     public function boot()
     {
-        // 发布配置文件
+        //发布配置文件
         $this->publishes([
             __DIR__.'/config/amqp.php' => config_path('amqp.php'),
         ]);
 
+        //生成默认队列任务
         $this->publishes([
             __DIR__ . '/QueueJob' => app_path("QueueJob"),
         ]);

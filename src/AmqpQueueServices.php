@@ -120,7 +120,7 @@ class AmqpQueueServices
         $this->initStrategy();
 
         $datetime = date("Y-m-d H:i:s", time());
-        echo " [{$datetime}] ChannelId:{$this->channel->getChannelId()} Waiting for messages...\n";
+        echo " [{$datetime}] ChannelId:{$this->channel->getChannelId()} Waiting for messages:\n";
 
         $channel->basic_consume(
             $this->queueJob->getQueueName(),
