@@ -91,9 +91,6 @@ event是队列实例标识，最好和connection用相同的key以便管理。
 
     //是否自动提交ACK
     public function isAutoAck(): bool;
-
-    //获取delivery_mode类型
-    public function getDeliveryMode(): int;
 ```
 
 当然你也可以自定义队列实例，只要继承Sai97\LaravelAmqp\Queue基类即可，具体功能配置参数参考Sai97\LaravelAmqp\QueueInterface。
