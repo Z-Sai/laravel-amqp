@@ -102,7 +102,11 @@ class AmqpQueueServices
         }
 
         //执行发布消息
-        $channel->basic_publish($message, $this->queueJob->getExchangeName(), $this->queueJob->getRoutingKey() ? $this->queueJob->getRoutingKey() : $this->queueJob->getQueueName());
+        $channel->basic_publish(
+            $message,
+            $this->queueJob->getExchangeName(),
+            $this->queueJob->getRoutingKey() ? $this->queueJob->getRoutingKey() : $this->queueJob->getQueueName()
+        );
     }
 
     /**
@@ -167,7 +171,7 @@ class AmqpQueueServices
             $this->queueJob->isQueueAutoDelete(),
             $this->queueJob->isQueueNowait(),
             new AMQPTable($argument),
-            ($this->queueJob->getQueueTicket() > 0) ? $this->queueJob->getQueueTicket() : null,
+            ($this->queueJob->getQueueTicket() > 0) ? $this->queueJob->getQueueTicket() : null
         );
 
         //使用交换机+路由KEY的交互模型
@@ -186,7 +190,7 @@ class AmqpQueueServices
                     $this->queueJob->isExchangeInternal(),
                     $this->queueJob->isExchangeNowait(),
                     new AMQPTable($exchangeArgument),
-                    ($this->queueJob->getExchangeTicket() > 0) ? $this->queueJob->getExchangeTicket() : null,
+                    ($this->queueJob->getExchangeTicket() > 0) ? $this->queueJob->getExchangeTicket() : null
                 );
             } else {
                 $channel->exchange_declare(
@@ -198,7 +202,7 @@ class AmqpQueueServices
                     $this->queueJob->isExchangeInternal(),
                     $this->queueJob->isExchangeNowait(),
                     new AMQPTable($this->queueJob->getExchangeArgs()),
-                    ($this->queueJob->getExchangeTicket() > 0) ? $this->queueJob->getExchangeTicket() : null,
+                    ($this->queueJob->getExchangeTicket() > 0) ? $this->queueJob->getExchangeTicket() : null
                 );
             }
             //将队列绑定至交换机
