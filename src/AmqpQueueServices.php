@@ -13,7 +13,7 @@ class AmqpQueueServices
      * 当前队列实例
      * @var QueueInterface
      */
-    private QueueInterface $queueJob;
+    private $queueJob;
 
     /**
      * 当前通道
