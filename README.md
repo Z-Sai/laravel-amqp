@@ -2,7 +2,7 @@
 基于php-amqplib/php-amqplib组件适配laravel框架的amqp封装库
 
 
-支持便捷可配置的队列工作模式 官网详情：https://www.rabbitmq.com/getstarted.html
+支持便捷可配置的队列工作模式 [官网详情](https://www.rabbitmq.com/getstarted.html)
 
 在此基础上可支持延迟消息、死信队列等机制。
 
@@ -211,4 +211,4 @@ supervisorctl update
 
 2. 通过配置numprocs参数来设定需要开启多少个相同配置项的消费者worker，这在任务分发、并行处理等场景十分适用，大大提高消费者执行效率。
 
-这里不详细叙述supervisord相关操作，具体可查看supervisord官方文档。
+这里不详细叙述supervisord相关操作，具体可查看[supervisord官方文档](http://supervisord.org/introduction.html)。
