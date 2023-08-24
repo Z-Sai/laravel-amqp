@@ -6,6 +6,19 @@
 
 在此基础上可支持延迟消息、死信队列等机制。
 
+### 环境要求：
+PHP版本: ^7.3|^8.0
+
+需要开启的扩展: socket
+
+其他: 
+1. 如果需要实现延迟任务需要安装对应版本的rabbitmq[延迟插件](https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases)，以rabbitmq3.9.0版本为例:
+```
+wget https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/3.9.0/rabbitmq_delayed_message_exchange-3.9.0.ez
+cp rabbitmq_delayed_message_exchange-3.9.0.ez /opt/rabbitmq/plugins/
+rabbitmq-plugins enable rabbitmq_delayed_message_exchange
+```
+
 ### 用法：
 
 #### 第一步 安装组件：
