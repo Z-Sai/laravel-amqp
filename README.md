@@ -113,7 +113,7 @@ event是队列实例标识，最好和connection用相同的key以便管理。
 #### 生产者:
 ```php
 $message = "This is message...";
-$amqpQueueServices = new AmqpQueueServices(QueueFactory::getInstance(DefaultQueueJob::class));
+$amqpQueueServices = new AmqpQueueServices(new DefaultQueueJob);
 $amqpQueueServices->producer($message);
 ```
 
@@ -124,10 +124,8 @@ $amqpQueueServices->producer($message);
 
 namespace App\Console\Commands;
 
-
 use Illuminate\Console\Command;
 use Sai97\LaravelAmqp\AmqpQueueServices;
-use Sai97\LaravelAmqp\QueueFactory;
 
 class RabbitMQWorker extends Command
 {
@@ -173,7 +171,7 @@ class RabbitMQWorker extends Command
             
             $this->info("rabbitmq worker of event[{$event}] process start ...");
 
-            $amqpQueueServices = new AmqpQueueServices(QueueFactory::getInstance($entity));
+            $amqpQueueServices = new AmqpQueueServices(new $entity);
             $amqpQueueServices->consumer();
 
         } catch (\Throwable $throwable) {
