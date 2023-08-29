@@ -30,7 +30,7 @@ composer require sai97/laravel-amqp
 ```
 php artisan vendor:publish --provider="Sai97\LaravelAmqp\AmqpQueueProviders"
 ```
-执行完后会分别在app/config目录下生成amqp.php(amqp连接配置等)、app/QueueJob/DefaultQueueJob.php(默认队列任务)
+执行完后会分别在app/config目录下生成amqp.php配置文件
 
 amqp.php
 
@@ -53,6 +53,40 @@ return [
         "default" => DefaultQueueJob::class,
     ]
 ];
+```
+
+DefaultQueueJob.php
+
+```php
+<?php
+
+namespace App\QueueJob;
+
+use PhpAmqpLib\Message\AMQPMessage;
+use Sai97\LaravelAmqp\Queue;
+
+class DefaultQueueJob extends Queue
+{
+    public function getConnectName(): string
+    {
+        return "default";
+    }
+
+    public function getQueueName(): string
+    {
+        return "myQueue";
+    }
+
+    public function getCallback(): callable
+    {
+        return function (AMQPMessage $message){
+            $nowDate = date("Y-m-d H:i:s", time());
+            echo "[{$nowDate}] The consumer message: {$message->body}" . PHP_EOL;
+            $message->ack();
+        };
+    }
+}
+
 ```
 
 connection为amqp连接配置，可根据自身业务去调整，完全对应php-amqplib/php-amqplib相关配置项，
@@ -192,7 +226,7 @@ class RabbitMQWorker extends Command
 [program:rabbitmq-worker-default]
 #process_name=%(program_name)s_%(process_num)d
 process_name=worker_%(process_num)d
-numprocs=3
+numprocs=2
 command=/usr/local/bin/php /app/www/laravel8/artisan rabbitmq:worker default
 autostart=true
 autorestart=true
@@ -204,7 +238,7 @@ redirect_stderr=true
 搭配supervisord来进行管理消费者进程有许多便捷的方面：
 1. 如果需要新增一个队列实例，只需要按照上述格式复制一个program，可以在不影响其他进程的情况下进程更新supervisord配置：
 ```
-supervisorctl update
+supervisorctl -c /etc/supervisord/supervisord.conf update
 ```
 
 2. 通过配置numprocs参数来设定需要开启多少个相同配置项的消费者worker，这在任务分发、并行处理等场景十分适用，大大提高消费者执行效率。
