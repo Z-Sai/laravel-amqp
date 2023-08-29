@@ -162,9 +162,17 @@ class AmqpQueueServices
 
             //如果是消费者调用方
             if ($caller == "consumer") {
+
                 $queueName = $this->handlerQueueDeclare();
+
+                //获取队列绑定交换机的路由KEY,如果是TOPIC模式则选择getQueueBindRoutingKey,其他模式选择getRoutingKey
+                if ($this->queueJob->getExchangeType() == AMQPExchangeType::TOPIC) {
+                    $routingKey = $this->queueJob->getQueueBindRoutingKey();
+                } else {
+                    $routingKey = $this->queueJob->getRoutingKey();
+                }
+
                 //将队列绑定至交换机
-                $routingKey = $this->queueJob->getExchangeType() == AMQPExchangeType::TOPIC ? $this->queueJob->getQueueBindRoutingKey() : $this->queueJob->getRoutingKey();
                 $channel->queue_bind($queueName, $this->queueJob->getExchangeName(), $routingKey);
             }
         } else { //不使用交换机交互模型
