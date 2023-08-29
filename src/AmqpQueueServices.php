@@ -165,12 +165,8 @@ class AmqpQueueServices
 
                 $queueName = $this->handlerQueueDeclare();
 
-                //获取队列绑定交换机的路由KEY,如果是TOPIC模式则选择getQueueBindRoutingKey,其他模式选择getRoutingKey
-                if ($this->queueJob->getExchangeType() == AMQPExchangeType::TOPIC) {
-                    $routingKey = $this->queueJob->getQueueBindRoutingKey();
-                } else {
-                    $routingKey = $this->queueJob->getRoutingKey();
-                }
+                //获取队列绑定交换机的路由KEY,优先选择getQueueBindRoutingKey
+                $routingKey = $this->queueJob->getQueueBindRoutingKey() ? $this->queueJob->getQueueBindRoutingKey() : $this->queueJob->getRoutingKey();
 
                 //将队列绑定至交换机
                 $channel->queue_bind($queueName, $this->queueJob->getExchangeName(), $routingKey);
