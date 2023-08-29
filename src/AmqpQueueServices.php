@@ -3,6 +3,7 @@
 namespace Sai97\LaravelAmqp;
 
 use PhpAmqpLib\Connection\AMQPStreamConnection;
+use PhpAmqpLib\Exchange\AMQPExchangeType;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
 use PhpAmqpLib\Channel\AMQPChannel;
@@ -163,7 +164,7 @@ class AmqpQueueServices
             if ($caller == "consumer") {
                 $queueName = $this->handlerQueueDeclare();
                 //将队列绑定至交换机
-                $routingKey = $this->queueJob->getQueueBindRoutingKey() ? $this->queueJob->getQueueBindRoutingKey() : $this->queueJob->getRoutingKey();
+                $routingKey = $this->queueJob->getExchangeType() == AMQPExchangeType::TOPIC ? $this->queueJob->getQueueBindRoutingKey() : $this->queueJob->getRoutingKey();
                 $channel->queue_bind($queueName, $this->queueJob->getExchangeName(), $routingKey);
             }
         } else { //不使用交换机交互模型
