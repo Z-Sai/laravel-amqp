@@ -52,6 +52,10 @@ abstract class Queue implements QueueInterface
         return "";
     }
 
+    public function getQueueBindRoutingKey(): string {
+        return "";
+    }
+
     public function getDeadLetterExchangeName(): string
     {
         return "";

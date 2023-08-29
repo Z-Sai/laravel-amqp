@@ -163,7 +163,8 @@ class AmqpQueueServices
             if ($caller == "consumer") {
                 $queueName = $this->handlerQueueDeclare();
                 //将队列绑定至交换机
-                $channel->queue_bind($queueName, $this->queueJob->getExchangeName(), $this->queueJob->getRoutingKey());
+                $routingKey = $this->queueJob->getQueueBindRoutingKey() ? $this->queueJob->getQueueBindRoutingKey() : $this->queueJob->getRoutingKey();
+                $channel->queue_bind($queueName, $this->queueJob->getExchangeName(), $routingKey);
             }
         } else { //不使用交换机交互模型
             $this->handlerQueueDeclare();

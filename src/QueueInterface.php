@@ -18,6 +18,9 @@ interface QueueInterface
     //获取路由KEY
     public function getRoutingKey(): string;
 
+    //获取队列绑定交换机的路由KEY
+    public function getQueueBindRoutingKey(): string;
+
     //获取QOS.PrefetchSize
     public function getQosPrefetchSize(): int;
 
