@@ -30,7 +30,7 @@ composer require sai97/laravel-amqp
 ```
 php artisan vendor:publish --provider="Sai97\LaravelAmqp\AmqpQueueProviders"
 ```
-执行完后会分别在app/config目录下生成amqp.php配置文件
+执行完后会在app/config目录下生成amqp.php配置文件
 
 amqp.php
 
@@ -55,42 +55,9 @@ return [
 ];
 ```
 
-DefaultQueueJob.php
-
-```php
-<?php
-
-namespace App\QueueJob;
-
-use PhpAmqpLib\Message\AMQPMessage;
-use Sai97\LaravelAmqp\Queue;
-
-class DefaultQueueJob extends Queue
-{
-    public function getConnectName(): string
-    {
-        return "default";
-    }
-
-    public function getQueueName(): string
-    {
-        return "myQueue";
-    }
-
-    public function getCallback(): callable
-    {
-        return function (AMQPMessage $message){
-            $nowDate = date("Y-m-d H:i:s", time());
-            echo "[{$nowDate}] The consumer message: {$message->body}" . PHP_EOL;
-            $message->ack();
-        };
-    }
-}
-
-```
-
 connection为amqp连接配置，可根据自身业务去调整，完全对应php-amqplib/php-amqplib相关配置项，
-event是队列实例标识，最好和connection用相同的key以便管理。
+event是队列实例标识。
+
 
 #### 目前可支持相关接口项：
 ```php
@@ -140,9 +107,42 @@ event是队列实例标识，最好和connection用相同的key以便管理。
     public function isAutoAck(): bool;
 ```
 
-当然你也可以自定义队列实例，只要继承Sai97\LaravelAmqp\Queue基类即可，具体功能配置参数参考Sai97\LaravelAmqp\QueueInterface。
+你可以自定义队列任务实例，只要继承Sai97\LaravelAmqp\Queue基类即可，具体功能配置参数参考Sai97\LaravelAmqp\QueueInterface。
 
 ### 代码示例:
+
+#### 队列任务实例类
+```php
+<?php
+
+namespace App\QueueJob;
+
+use PhpAmqpLib\Message\AMQPMessage;
+use Sai97\LaravelAmqp\Queue;
+
+class DefaultQueueJob extends Queue
+{
+    public function getConnectName(): string
+    {
+        return "default";
+    }
+
+    public function getQueueName(): string
+    {
+        return "myQueue";
+    }
+
+    public function getCallback(): callable
+    {
+        return function (AMQPMessage $message){
+            $nowDate = date("Y-m-d H:i:s", time());
+            echo "[{$nowDate}] The consumer message: {$message->body}" . PHP_EOL;
+            $message->ack();
+        };
+    }
+}
+
+```
 
 #### 生产者:
 ```php
