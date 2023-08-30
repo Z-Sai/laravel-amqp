@@ -3,7 +3,6 @@
 namespace Sai97\LaravelAmqp;
 
 use PhpAmqpLib\Connection\AMQPStreamConnection;
-use PhpAmqpLib\Exchange\AMQPExchangeType;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
 use PhpAmqpLib\Channel\AMQPChannel;
