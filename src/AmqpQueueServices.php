@@ -72,7 +72,25 @@ class AmqpQueueServices
     protected function connection(array $config): void
     {
         if (!($this->connection instanceof AMQPStreamConnection)) {
-            $this->connection = new AMQPStreamConnection($config["host"], $config["port"], $config["user"], $config["password"]);
+            $this->connection = new AMQPStreamConnection(
+                $config["host"],
+                $config["port"],
+                $config["user"],
+                $config["password"],
+                $config["vhost"] ?? "/",
+                $config["insist"] ?? false,
+                $config["login_method"] ?? "AMQPLAIN",
+                $config["login_response"] ?? null,
+                $config["locale"] ?? "en_US",
+                $config["connection_timeout"] ?? 3.0,
+                $config["read_write_timeout"] ?? 3.0,
+                $config["context"] ?? null,
+                $config["keepalive"] ?? false,
+                $config["heartbeat"] ?? 0,
+                $config["channel_rpc_timeout"] ?? 0.0,
+                $config["ssl_protocol"] ?? null,
+                $config["config"] ?? null
+            );
         }
     }
 
