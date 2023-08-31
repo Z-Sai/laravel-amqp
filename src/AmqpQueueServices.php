@@ -39,22 +39,6 @@ class AmqpQueueServices
     }
 
     /**
-     * 获取通道
-     * @return AMQPChannel
-     */
-    public function getChannel(): AMQPChannel
-    {
-        if ($this->channel instanceof AMQPChannel) {
-            return $this->channel;
-        }
-        $this->channel = $this->connection->channel();
-        if ($this->queueJob->isPublisherConfirm()) {
-            $this->channel->confirm_select($this->queueJob->getConfirmSelectNowait());
-        }
-        return $this->channel;
-    }
-
-    /**
      * 获取配置
      * @throws \Exception
      */
@@ -97,6 +81,21 @@ class AmqpQueueServices
         }
     }
 
+    /**
+     * 获取通道
+     * @return AMQPChannel
+     */
+    public function getChannel(): AMQPChannel
+    {
+        if ($this->channel instanceof AMQPChannel) {
+            return $this->channel;
+        }
+        $this->channel = $this->connection->channel();
+        if ($this->queueJob->isPublisherConfirm()) {
+            $this->channel->confirm_select($this->queueJob->getConfirmSelectNowait());
+        }
+        return $this->channel;
+    }
 
     /**
      * 生产者发送消息
