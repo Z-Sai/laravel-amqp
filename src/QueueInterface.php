@@ -63,6 +63,21 @@ interface QueueInterface
     //获取message.delivery_mode类型
     public function getMessageDeliveryMode(): int;
 
+    //是否开启发布者确认
+    public function isPublisherConfirm(): bool;
+
+    //confirm_select.nowait
+    public function getConfirmSelectNowait(): bool;
+
+    //等待发布者确认等待时间 单位:秒
+    public function getPublisherConfirmWaitTime(): int;
+
+    //异步ACK发布者确认回调函数
+    public function getPublisherConfirmsAckHandler();
+
+    //异步NACK发布者确认回调函数
+    public function getPublisherConfirmsNackHandler();
+
     public function getConsumerTag(): string;
     public function isConsumerNoLocal(): bool;
     public function isConsumerExclusive(): bool;

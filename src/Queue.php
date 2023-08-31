@@ -185,4 +185,29 @@ abstract class Queue implements QueueInterface
     {
         return [];
     }
+
+    public function isPublisherConfirm(): bool
+    {
+        return false;
+    }
+
+    public function getConfirmSelectNowait(): bool
+    {
+        return false;
+    }
+
+    public function getPublisherConfirmWaitTime(): int
+    {
+        return 0;
+    }
+
+    public function getPublisherConfirmsAckHandler()
+    {
+        return null;
+    }
+
+    public function getPublisherConfirmsNackHandler()
+    {
+        return null;
+    }
 }

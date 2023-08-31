@@ -48,6 +48,9 @@ class AmqpQueueServices
             return $this->channel;
         }
         $this->channel = $this->connection->channel();
+        if ($this->queueJob->isPublisherConfirm()) {
+            $this->channel->confirm_select($this->queueJob->getConfirmSelectNowait());
+        }
         return $this->channel;
     }
 
@@ -104,6 +107,17 @@ class AmqpQueueServices
     {
         $channel = $this->getChannel();
 
+        if ($this->queueJob->isPublisherConfirm()) {
+            //发布者异步确认ACK回调函数
+            if (!is_null($publisherConfirmsAckHandler = $this->queueJob->getPublisherConfirmsAckHandler())) {
+                $channel->set_ack_handler($publisherConfirmsAckHandler);
+            }
+            //发布者异步确认NACK回调函数
+            if (!is_null($publisherConfirmsNackHandler = $this->queueJob->getPublisherConfirmsNackHandler())) {
+                $channel->set_nack_handler($publisherConfirmsNackHandler);
+            }
+        }
+
         $properties = [
             "content_type" => $this->queueJob->getContentType(),
             "delivery_mode" => $this->queueJob->getMessageDeliveryMode()
@@ -126,6 +140,11 @@ class AmqpQueueServices
             $this->queueJob->getExchangeName(),
             $this->queueJob->getRoutingKey() ? $this->queueJob->getRoutingKey() : $this->queueJob->getQueueName()
         );
+
+        if ($this->queueJob->isPublisherConfirm()) {
+            //等待接收服务器的ack和nack
+            $channel->wait_for_pending_acks($this->queueJob->getPublisherConfirmWaitTime());
+        }
     }
 
     /**
