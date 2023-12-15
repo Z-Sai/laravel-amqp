@@ -30,7 +30,7 @@ class AmqpQueueServices
     /**
      * @var array $initStrategyMark;
      */
-    private $initStrategyMark;
+    private $initStrategyMark = [];
 
     /**
      * 构造函数
