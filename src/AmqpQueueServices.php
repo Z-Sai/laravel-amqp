@@ -28,6 +28,11 @@ class AmqpQueueServices
     private $connection;
 
     /**
+     * @var array $initStrategyMark;
+     */
+    private $initStrategyMark;
+
+    /**
      * 构造函数
      * @param QueueInterface $queueJob
      * @throws \Exception
@@ -123,8 +128,11 @@ class AmqpQueueServices
         ];
         $message = new AMQPMessage($body, $properties);
 
-        //初始化策略
-        $this->initStrategy("producer");
+        //首次初始化策略
+        if (!in_array("producer", $this->initStrategyMark)) {
+            var_dump("producer initStrategyMark...");
+            $this->initStrategy("producer");
+        }
 
         if ($this->queueJob->isDelay() && $this->queueJob->getDelayTTL()) {
             $arguments = [
@@ -158,8 +166,10 @@ class AmqpQueueServices
         //当前消费者QOS相关配置
         $channel->basic_qos($this->queueJob->getQosPrefetchSize(), $this->queueJob->getQosPrefetchCount(), $this->queueJob->isQosGlobal());
 
-        //初始化策略
-        $this->initStrategy("consumer");
+        //首次初始化策略
+        if (!in_array("consumer", $this->initStrategyMark)) {
+            $this->initStrategy("consumer");
+        }
 
         $datetime = date("Y-m-d H:i:s", time());
         echo " [{$datetime}] ChannelId:{$channel->getChannelId()} Waiting for messages:\n";
@@ -187,7 +197,10 @@ class AmqpQueueServices
      */
     private function initStrategy(string $caller)
     {
-        if (!in_array($caller, ["producer", "consumer"])) throw new \Exception("initStrategy scene Params is Fail.");
+        $callerCollect = ["producer", "consumer"];
+        if (!in_array($caller, $callerCollect)) throw new \Exception("initStrategy scene Params is Fail.");
+
+        if (count($this->initStrategyMark) < count($callerCollect)) $this->initStrategyMark[] = $caller;
 
         $channel = $this->getChannel();
 
