@@ -130,7 +130,6 @@ class AmqpQueueServices
 
         //首次初始化策略
         if (!in_array("producer", $this->initStrategyMark)) {
-            var_dump("producer initStrategyMark...");
             $this->initStrategy("producer");
         }
 
